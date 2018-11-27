@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>InvoiceOne</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          InvoiceOne
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+    </nav>
+    <div class="container">
+  
+  
+      <div class="columns">
+        <div class="column">
+          <table class="table is-responsive">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+        
+              
+            {% for item in invoices %}
+              <tr>
+                <td>
+                  {{ item.id }}
+                </td>
+                <td>
+                  {{ item.invoice_date }}
+                </td>
+                <td>
+                  {{ item.for_company_name }}
+                </td>
+                <td>
+                  {{ item.to_company_name }}
+                </td>
+                <td>
+                  {{ item.total }}
+                </td>
+                <td>
+                  <a href="/{{ item.id }}" class="button is-success">View Invoice</a>
+                </td>
+              </tr>
+            {% endfor %}
+              
+              
+            </tbody>
+          </table>
+
+        </div>
+
+      </div> 
+
+    </div>
+  </form>
+  </body>
+</html>
+
+
+
+
+
+
+

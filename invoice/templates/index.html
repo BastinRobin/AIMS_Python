@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>InvoiceOne</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          InvoiceOne
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="columns">
+        <form action="/create" method="POST">
+        <div class="column">
+            <div class="field">
+              <div class="control">
+                <label>Invoice Date:</label>
+                <input class="input is-primary" type="date" name="invoice_date">
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <label>From Company Name</label>
+                <input class="input is-primary" placeholder="Company Name" name="for_company_name">
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <textarea class="textarea" placeholder="Company Address" name="for_company_address"></textarea>
+              </div>
+            </div>
+        </div>
+        <div class="column">
+          
+            <div class="field">
+              <div class="control">
+                <label>To Company Name</label>
+                <input class="input is-primary" type="text" placeholder="Company Name" name="to_company_name">
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <textarea class="textarea" placeholder="Company Address" name="to_company_address"></textarea>
+              </div>
+            </div>
+
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="column">
+          <table class="table is-responsive">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+        
+
+
+              <tr>
+                <td>
+                  <input type="text" class="input item_name" placeholder="Enter item name">
+                </td>
+                <td>
+                  <input type="number" class="input item_qty" placeholder="Qty">
+                </td>
+                <td>
+                  <input type="text" class="input item_price" placeholder="Price">
+                </td>
+                <td>
+                  <button type="submit" class="add_item button is-primary">Add</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  
+                </td>
+                
+                <td>
+                  <input type="text" class="input" name="tax" placeholder="Tax">
+
+                </td>
+                <td>
+                  <input type="text" class="input total" name="total" placeholder="Total">
+                </td>
+                
+              </tr>
+              
+            </tbody>
+          </table>
+
+        </div>
+
+      </div> 
+
+
+      <div class="columns">
+        <div class="column">
+          <a href="/list" class="button is-large is-info is-pulled-right">List All Invoices</a>
+          <button type="submit" class="button generate_invoice is-large is-success is-pulled-right">Generate</button>
+        </div>
+      </div> 
+    </div>
+  </form>
+  </body>
+  <script type="text/javascript">
+  
+  calculate = function() {
+    total = 0;
+    window.items.forEach(function(d) {
+
+        total = total + Number(d.item_price*d.item_qty);
+    });
+
+    $('.total').val(total);
+
+  }
+
+
+  window.items = [];
+  $('.add_item').click(function(e) {
+    e.preventDefault();
+
+    data = {
+      'item_name': $('.item_name').val(),
+      'item_qty' : $('.item_qty').val(),
+      'item_price': $('.item_price').val()
+    };
+
+    $('table tbody').prepend("<tr><td>"+data.item_name+"</td><td>"+data.item_qty+"</td><td>"+data.item_price+"</td><tr>");
+
+    window.items.push(data);
+
+   $('.item_name').val("");
+   $('.item_qty').val("");
+   $('.item_price').val("");
+
+   calculate();
+
+   $('.add_item').notify("Item added", "success");
+
+  });
+
+
+  $('.generate_invoice').click(function(e) {
+    e.preventDefault();
+
+    data = {
+
+      for_company_name: $('input[name=for_company_name]').val(),
+      for_company_address: $('textarea[name=for_company_address]').val(),
+      to_company_name: $('input[name=to_company_name]').val(),
+      to_company_address: $('textarea[name=to_company_address]').val(), 
+      invoice_date: $('input[name=invoice_date]').val(),
+      items: JSON.stringify(window.items),
+      tax: $('input[name=tax]').val(),
+      total: $('input[name=total]').val()
+    };
+
+    console.log(data);
+    $.ajax({
+        url: "/create",
+        type: "post",
+        data: data,
+        success: function(d) {
+            
+            console.log(d);
+            $.notify('Invoice Generated', 'success');
+        }
+    });
+
+
+  });
+
+
+
+
+
+  </script>
+</html>
+
+
+
+
+
+
+
